@@ -1,3 +1,27 @@
+function setRegionOption(obj) {
+	var list = [];
+    var config = obj['config'];
+    var regions = config['regions'];
+    for (var i = 0; i < regions.length; i++) {
+    	var region = regions[i]['region'];
+    	$('#select_region').append($('<option value="' + region + '">' + region + '</option>'));
+    }
+    return list;
+}
+function choiceRegion() {
+	var region = $('#select_region').val();
+	var rows = $("table")[0].rows;
+	jQuery.each(rows, function(i) {
+		if(i != 0) {
+			var cells = rows[i].cells;
+			if(cells[1].innerText != region) {
+				$(cells).hide();
+			} else {
+				$(cells).show();
+			}
+		}
+	});
+}
 function drawOndemandTable() {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'region');
