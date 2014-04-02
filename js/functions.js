@@ -8,19 +8,15 @@ function setRegionOption(obj) {
     }
     return list;
 }
-function choiceRegion() {
-	var region = $('#select_region').val();
-	var rows = $("table")[0].rows;
-	jQuery.each(rows, function(i) {
-		if(i != 0) {
-			var cells = rows[i].cells;
-			if(cells[1].innerText != region) {
-				$(cells).hide();
-			} else {
-				$(cells).show();
-			}
-		}
-	});
+function choiceRegionOndemand() {
+    list = toOndemandList(obj);
+    google.load('visualization', '1', {packages:['table']});
+    drawOndemandTable();
+}
+function choiceRegionReserved() {
+    list = toReservedList(obj);
+    google.load('visualization', '1', {packages:['table']});
+    drawReservedTable();
 }
 function drawOndemandTable() {
     var data = new google.visualization.DataTable();
@@ -41,25 +37,28 @@ function toOndemandList(obj) {
     var regions = config['regions'];
     for (var i = 0; i < regions.length; i++) {
         var region = regions[i]['region'];
-        var instypes = regions[i]['instanceTypes'];
-        for (var j = 0; j < instypes.length; j++) {
-            var sizes = instypes[j]['sizes'];
-            for (var k = 0; k < sizes.length; k++) {
-                var size = sizes[k]['size'];
-                var vCPU = sizes[k]['vCPU'];
-                var ECU  = sizes[k]['ECU'];
-                var memoryGiB = sizes[k]['memoryGiB'];
-                var storageGB = sizes[k]['storageGB'];
-                var price     = sizes[k]['valueColumns'][0]['prices']['USD'];
-                list.push([
-                    region,
-                    size,
-                    {v: parseInt(vCPU),f: vCPU},
-                    {v: parseFloat(ECU), f: ECU},
-                    {v: parseFloat(memoryGiB), f: memoryGiB},
-                    storageGB,
-                    {v: parseFloat(price), f: "$" + price}
-                ]);
+        var select_region = $('#select_region').val();
+        if(region == select_region) {
+            var instypes = regions[i]['instanceTypes'];
+            for (var j = 0; j < instypes.length; j++) {
+                var sizes = instypes[j]['sizes'];
+                for (var k = 0; k < sizes.length; k++) {
+                    var size = sizes[k]['size'];
+                    var vCPU = sizes[k]['vCPU'];
+                    var ECU  = sizes[k]['ECU'];
+                    var memoryGiB = sizes[k]['memoryGiB'];
+                    var storageGB = sizes[k]['storageGB'];
+                    var price     = sizes[k]['valueColumns'][0]['prices']['USD'];
+                    list.push([
+                        region,
+                        size,
+                        {v: parseInt(vCPU),f: vCPU},
+                        {v: parseFloat(ECU), f: ECU},
+                        {v: parseFloat(memoryGiB), f: memoryGiB},
+                        storageGB,
+                        {v: parseFloat(price), f: "$" + price}
+                    ]);
+                }
             }
         }
     }
@@ -83,37 +82,40 @@ function toReservedList(obj) {
     var regions = config['regions'];
     for (var i = 0; i < regions.length; i++) {
         var region = regions[i]['region'];
-        var instypes = regions[i]['instanceTypes'];
-        for (var j = 0; j < instypes.length; j++) {
-            var sizes = instypes[j]['sizes'];
-            for (var k = 0; k < sizes.length; k++) {
-                var valueColumns = sizes[k]['valueColumns'];
-                var size = sizes[k]['size'];
-                for (var l = 0; l < valueColumns.length; l++) {
-                    var priceName = valueColumns[l]['name'];
-                    switch(priceName) {
-                        case "yrTerm1" :
-                            var yrTerm1 = valueColumns[l]['prices']['USD'];
-                            break;
-                        case  "yrTerm1Hourly" :
-                            var yrTerm1Hourly = valueColumns[l]['prices']['USD'];
-                            break;
-                        case "yrTerm3" :
-                            var yrTerm3 = valueColumns[l]['prices']['USD'];
-                            break;
-                        case  "yrTerm3Hourly" :
-                            var yrTerm3Hourly = valueColumns[l]['prices']['USD'];
-                            break;
+        var select_region = $('#select_region').val();
+        if(region == select_region) {
+            var instypes = regions[i]['instanceTypes'];
+            for (var j = 0; j < instypes.length; j++) {
+                var sizes = instypes[j]['sizes'];
+                for (var k = 0; k < sizes.length; k++) {
+                    var valueColumns = sizes[k]['valueColumns'];
+                    var size = sizes[k]['size'];
+                    for (var l = 0; l < valueColumns.length; l++) {
+                        var priceName = valueColumns[l]['name'];
+                        switch(priceName) {
+                            case "yrTerm1" :
+                                var yrTerm1 = valueColumns[l]['prices']['USD'];
+                                break;
+                            case  "yrTerm1Hourly" :
+                                var yrTerm1Hourly = valueColumns[l]['prices']['USD'];
+                                break;
+                            case "yrTerm3" :
+                                var yrTerm3 = valueColumns[l]['prices']['USD'];
+                                break;
+                            case  "yrTerm3Hourly" :
+                                var yrTerm3Hourly = valueColumns[l]['prices']['USD'];
+                                break;
+                        }
                     }
+                    list.push([
+                        region,
+                        size,
+                        {v: parseFloat(yrTerm1), f: yrTerm1},
+                        {v: parseFloat(yrTerm1Hourly), f: yrTerm1Hourly},
+                        {v: parseFloat(yrTerm3), f: yrTerm3},
+                        {v: parseFloat(yrTerm3Hourly), f: yrTerm3Hourly}
+                    ]);
                 }
-                list.push([
-                    region,
-                    size,
-                    {v: parseFloat(yrTerm1), f: yrTerm1},
-                    {v: parseFloat(yrTerm1Hourly), f: yrTerm1Hourly},
-                    {v: parseFloat(yrTerm3), f: yrTerm3},
-                    {v: parseFloat(yrTerm3Hourly), f: yrTerm3Hourly}
-                ]);
             }
         }
     }
