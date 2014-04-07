@@ -9,20 +9,22 @@
         <script type='text/javascript' src='http://code.jquery.com/jquery-1.11.0.min.js'></script>
         <script type='text/javascript' src='https://www.google.com/jsapi'></script>
         <script type='text/javascript' src='js/functions.js'></script>
+        <link rel="stylesheet" href="style/style.css" type="text/css" />
     </head>
     <body>
-        <h1>WindowsServer Reserved Instances(Light use)</h1>
+        <h1>WindowsServer Reserved Instances(Light utilization)</h1>
         <div id='region'>
-            Choice&nbsp;Region&nbsp;:&nbsp;<select id="select_region"></select>
+            Region&nbsp;:&nbsp;<select id="select_region"></select>
         </div>
         <div id='table_div'></div>
+        <div id='warn'>本ページは制作者本人が利用する目的で作られております。<br/>本ページの情報を利用した際に発生した問題に対する責任は負いかねますのでご了承ください。</div>
         <script type='text/javascript'>
             list = [];
             obj = null;
             function callback(json_data) {
                 obj = eval(json_data);
-                setRegionOption(obj);
-                list = toReservedList(obj);
+                setReservedOption();
+                list = toReservedList();
                 google.load('visualization', '1', {packages:['table']});
                 google.setOnLoadCallback(drawReservedTable);
             }

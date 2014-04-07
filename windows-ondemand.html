@@ -9,20 +9,26 @@
         <script type='text/javascript' src='http://code.jquery.com/jquery-1.11.0.min.js'></script>
         <script type='text/javascript' src='https://www.google.com/jsapi'></script>
         <script type='text/javascript' src='js/functions.js'></script>
+        <link rel="stylesheet" href="style/style.css" type="text/css" />
     </head>
     <body>
         <h1>WindowsServer Ondemand Instances</h1>
-        <div id='region'>
-            Choice&nbsp;Region&nbsp;:&nbsp;<select id="select_region"></select>
+        <div id='options'>
+            Region&nbsp;:&nbsp;<select id="select_region"></select>
+            &nbsp;vCPU&nbsp;:&nbsp;<select id="select_vcpu"></select>
+            &nbsp;ECU&nbsp;:&nbsp;<select id="select_ecu"></select>
+            &nbsp;memoryGiB&nbsp;:&nbsp;<select id="select_memory"></select>
+            &nbsp;strageGB&nbsp;:&nbsp;<select id="select_strage"></select>
         </div>
         <div id='table_div'></div>
+        <div id='warn'>本ページは制作者本人が利用する目的で作られております。<br/>本ページの情報を利用した際に発生した問題に対する責任は負いかねますのでご了承ください。</div>
         <script type='text/javascript'>
             list = [];
             obj = null;
             function callback(json_data) {
                 obj = eval(json_data);
-                setRegionOption(obj);
-                list = toOndemandList(obj);
+                setOndemandOption();
+                list = toOndemandList();
                 google.load('visualization', '1', {packages:['table']});
                 google.setOnLoadCallback(drawOndemandTable);
             }
